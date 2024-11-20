@@ -18,6 +18,7 @@ opt-level = 3
 debug = false
 lto = true
 incremental = false
+strip = true
 
 [dependencies]
 anyhow = "1.0"

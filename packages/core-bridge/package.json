@@ -1,5 +1,5 @@
 {
-  "name": "@temporalio/core-bridge",
+  "name": "@angellist/temporalio-core-bridge",
   "version": "1.13.2",
   "description": "Temporal.io SDK Core<>Node bridge",
   "main": "index.js",
@@ -41,6 +41,7 @@
     "node": ">= 18.0.0"
   },
   "files": [
+    "bridge-macros",
     "scripts",
     "src",
     "releases",
@@ -54,6 +55,6 @@
     "lib"
   ],
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com"
   }
 }

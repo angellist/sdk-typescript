@@ -93,6 +93,7 @@ function compile(requestedTarget) {
   if (status !== 0 || error) {
     throw new Error(`Failed to build${target ? ' for ' + target : ''}: status code ${status}`, error);
   }
+  try { fs.rmdirSync('target', { recursive: true }); } catch (err) { }
 }
 
 if (requestedTargets.length > 0) {

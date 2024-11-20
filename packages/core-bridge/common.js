@@ -14,13 +14,20 @@ const targets = [
   'aarch64-apple-darwin',
   'x86_64-unknown-linux-gnu',
   'aarch64-unknown-linux-gnu',
+  'x86_64-unknown-linux-musl',
+  'aarch64-unknown-linux-musl',
   // TODO: this is not supported on macos
   'x86_64-pc-windows-msvc',
   'x86_64-pc-windows-gnu',
 ];
 
 const archAlias = { x64: 'x86_64', arm64: 'aarch64' };
-const platformMapping = { darwin: 'apple-darwin', linux: 'unknown-linux-gnu', win32: 'pc-windows-msvc' };
+const platformMapping = {
+  darwin: 'apple-darwin',
+  linux: 'unknown-linux-gnu',
+  linux_musl: 'unknown-linux-musl',
+  win32: 'pc-windows-msvc',
+};
 
 class PrebuildError extends Error {
   constructor(message) {
@@ -29,12 +36,17 @@ class PrebuildError extends Error {
   }
 }
 
+function isMuslSystem() {
+  return process.report.getReport().sharedObjects.some((lib) => lib.includes('musl'));
+}
+
 function getPrebuiltTargetName() {
   const arch = archAlias[os.arch()];
   if (arch === undefined) {
     throw new PrebuildError(`No prebuilt module for arch ${os.arch()}`);
   }
-  const platform = platformMapping[os.platform()];
+
+  const platform = isMuslSystem() ? platformMapping[`${os.platform()}_musl`] : platformMapping[os.platform()];
   if (platform === undefined) {
     throw new PrebuildError(`No prebuilt module for platform ${os.platform()}`);
   }
@@ -50,4 +62,12 @@ function getPrebuiltPath() {
   }
 }
 
-module.exports = { targets, archAlias, platformMapping, PrebuildError, getPrebuiltPath, getPrebuiltTargetName };
+module.exports = {
+  targets,
+  archAlias,
+  platformMapping,
+  PrebuildError,
+  getPrebuiltPath,
+  getPrebuiltTargetName,
+  isMuslSystem,
+};
